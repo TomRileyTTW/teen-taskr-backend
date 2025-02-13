@@ -1,16 +1,24 @@
 require("dotenv").config();
 const express = require("express");
-const cors = require("cors");
 
 const app = express();
-app.use(cors());
+const PORT = process.env.PORT || 5000;
+
+// Middleware to parse JSON requests
 app.use(express.json());
 
+// Test Route to check if server is running
 app.get("/", (req, res) => {
-  res.send("TeenTaskr API is running!");
+    res.send("Server is running successfully!");
 });
 
-const PORT = process.env.PORT || 5000;
+// Error Handling Middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send("Something went wrong!");
+});
+
+// Start the server
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
 });
