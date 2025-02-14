@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const { Pool } = require("pg");
 
+// Set up Express app
 const app = express();
 const PORT = process.env.PORT || 5001;
 
@@ -13,34 +14,34 @@ app.use(express.json());
 // Database connection
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: process.env.DATABASE_URL.includes("localhost") ? false : { rejectUnauthorized: false }
+    ssl: { rejectUnauthorized: false } // Ensures compatibility with Railway/PostgreSQL hosting
 });
 
 // Test database connection
-(async () => {
-    try {
-        await pool.connect();
-        console.log("✅ Connected to PostgreSQL Database");
-    } catch (err) {
-        console.error("❌ Database connection error:", err.stack);
-    }
-})();
+pool.connect()
+  .then(() => console.log("Connected to PostgreSQL Database"))
+  .catch(err => {
+      console.error("Database connection error", err);
+      process.exit(1); // Stop the server if DB fails
+  });
 
-// Example Route to Test API
+
+// Example API Route to Test Backend
 app.get("/", (req, res) => {
-    res.send("✅ Teen Taskr Backend is Running!");
+    res.send("🚀 Teen Taskr Backend is Running!");
 });
 
-// Example API Endpoint (Modify as Needed)
+// Example API Endpoint to Test DB Connection
 app.get("/test-db", async (req, res) => {
     try {
         const result = await pool.query("SELECT NOW()");
-        res.json({ message: "✅ Database connected!", time: result.rows[0].now });
+        res.json({ message: "Database connected!", time: result.rows[0] });
     } catch (err) {
-        console.error("❌ Database query error:", err.message);
+        console.error(err.message);
         res.status(500).send("Server Error");
     }
 });
+
 
 // Start Server
 app.listen(PORT, () => {
