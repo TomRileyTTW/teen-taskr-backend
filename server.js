@@ -27,11 +27,11 @@ app.get("/api/users", (req, res) => {
 
 // ✅ Global Error Handling Middleware
 app.use((err, req, res, next) => {
-  console.error("❌ Error:", err.stack);
+  console.error(err.stack);
   res.status(500).json({ message: "Something went wrong!" });
 });
 
-// ✅ Start the server and log the port it's running on
+// ✅ Start the server
 app.listen(PORT, () => {
   console.log(`🚀 Server is running on port ${PORT}`);
 });
