@@ -3,7 +3,6 @@ const express = require("express");
 const cors = require("cors");
 const { Pool } = require("pg");
 
-// Set up Express app
 const app = express();
 const PORT = process.env.PORT || 5001;
 
@@ -14,24 +13,20 @@ app.use(express.json());
 // Database connection
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false } // Ensures compatibility with Railway/PostgreSQL hosting
+    ssl: { rejectUnauthorized: false }
 });
 
 // Test database connection
 pool.connect()
-  .then(() => console.log("Connected to PostgreSQL Database"))
-  .catch(err => {
-      console.error("Database connection error", err);
-      process.exit(1); // Stop the server if DB fails
-  });
+    .then(() => console.log("Connected to PostgreSQL Database"))
+    .catch(err => console.error("Database connection error", err.stack));
 
-
-// Example API Route to Test Backend
+// Test route to verify backend is working
 app.get("/", (req, res) => {
-    res.send("🚀 Teen Taskr Backend is Running!");
+    res.send("Teen Taskr Backend is Running!");
 });
 
-// Example API Endpoint to Test DB Connection
+// Example API endpoint
 app.get("/test-db", async (req, res) => {
     try {
         const result = await pool.query("SELECT NOW()");
@@ -42,8 +37,7 @@ app.get("/test-db", async (req, res) => {
     }
 });
 
-
-// Start Server
+// Start server
 app.listen(PORT, () => {
     console.log(`🚀 Server is running on port ${PORT}`);
 });
